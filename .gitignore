@@ -28,6 +28,8 @@ __pycache__/
 htmlcov/
 .mypy_cache/
 
-# Local data cache
+# Local data cache & generated files
 data/cache_embeddings.npy
 data/cache_bm25/
+data/calendars/*.ics
+!data/calendars/.gitkeep

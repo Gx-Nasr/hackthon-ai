@@ -128,3 +128,22 @@ def test_trilingual_advisor_ask(sample_announcements, student_profile):
     assert len(ans.cited_announcements) > 0
     assert "Hackathon" in ans.cited_announcements[0].title
     assert ans.top_badge is not None
+
+
+def test_strict_retrieval_and_no_match_location(sample_announcements, student_profile):
+    retriever = HybridRetriever()
+    retriever.index_announcements(sample_announcements)
+    advisor = TrilingualAdvisor(retriever, student_profile)
+
+    # 1. Search for a non-existent campus / city: Marrakech
+    results = retriever.search("wach kayn chi workshop f marrakech?")
+    assert len(results) == 0
+
+    # 2. Ask advisor about Marrakech: must not cite any irrelevant event or generate ics
+    ans = advisor.ask("wach kayn chi workshop f marrakech?")
+    assert ans.detected_language == "Moroccan Darija"
+    assert len(ans.cited_announcements) == 0
+    assert ans.top_badge is None
+    assert ans.ics_download_filename is None
+    assert "Marrakech" in ans.answer
+    assert "Rabat" in ans.answer or "Ben Guerir" in ans.answer

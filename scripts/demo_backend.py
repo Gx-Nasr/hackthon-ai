@@ -63,9 +63,10 @@ def run_demo():
     advisor = TrilingualAdvisor(retriever, profile)
 
     test_queries = [
-        ("Moroccan Darija", "wach kayn chi hackathon f rabat had weekend?"),
-        ("French", "Où se déroule le workshop de robotique Forgebots ?"),
-        ("English", "Where is the 1337 coding contest taking place?")
+        ("Moroccan Darija (Strict Negative)", "wach kayn chi workshop f marrakech?"),
+        ("Moroccan Darija (Actionable Match)", "wach kayn chi hackathon f rabat had weekend?"),
+        ("French (Same-Campus Match)", "Où se déroule le workshop de robotique Forgebots ?"),
+        ("English (Cross-Campus Match)", "Where is the 1337 coding contest taking place?")
     ]
 
     for lang_label, query in test_queries:

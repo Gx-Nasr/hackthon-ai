@@ -202,12 +202,13 @@ class TrilingualAdvisor:
 
     def ask(self, query: str, top_k: int = 3) -> ChatAnswer:
         """
-        Executes hybrid retrieval, checks student conflicts, and generates
+        Executes strict hybrid retrieval, checks student conflicts, and generates
         a culturally fluent and personalized response in the user's language.
         """
         detected_lang = self.detect_language(query)
+        detected_loc = self.retriever.extract_location_filter(query)
 
-        # 1. Hybrid Search
+        # 1. Strict Hybrid Search
         results = self.retriever.search(query, top_k=top_k)
         cited_announcements = [r.announcement for r in results]
 
@@ -218,15 +219,17 @@ class TrilingualAdvisor:
             for r in results:
                 r.badge = self.detector.evaluate(r.announcement)
 
-        # 3. Generate Answer (via Gemini API or intelligent grounded fallback)
-        if self._client is not None and cited_announcements:
+        # 3. Generate Answer (Strict: zero hallucinations when no matches exist)
+        if not cited_announcements:
+            answer_text = self._generate_no_match_answer(query, detected_lang, detected_loc)
+            ics_filename = None
+        elif self._client is not None:
             answer_text = self._generate_gemini_answer(query, detected_lang, results)
+            top_ann = cited_announcements[0]
+            clean_title = re.sub(r"[^\w\-]", "_", top_ann.title[:20].lower())
+            ics_filename = f"{top_ann.id}_{clean_title}.ics"
         else:
             answer_text = self._generate_rule_based_answer(query, detected_lang, results)
-
-        # 4. Prepare calendar filename if top announcement exists
-        ics_filename = None
-        if cited_announcements:
             top_ann = cited_announcements[0]
             clean_title = re.sub(r"[^\w\-]", "_", top_ann.title[:20].lower())
             ics_filename = f"{top_ann.id}_{clean_title}.ics"
@@ -239,6 +242,46 @@ class TrilingualAdvisor:
             top_badge=top_badge,
             ics_download_filename=ics_filename
         )
+
+    def _generate_no_match_answer(
+        self,
+        query: str,
+        detected_lang: str,
+        detected_loc: Optional[str]
+    ) -> str:
+        """Strict and helpful message when no announcements match query or requested location."""
+        if detected_loc:
+            if detected_lang == "Moroccan Darija":
+                return (
+                    f"Makayn hta chi event aw workshop f **{detected_loc}** f les annonces l-halyin. "
+                    "Les événements d'UM6P l-moujoudin dabba kaynin ghir f campus **Rabat** wla **Ben Guerir**."
+                )
+            elif detected_lang == "French":
+                return (
+                    f"Aucun événement ou atelier n'est répertorié à **{detected_loc}**. "
+                    "Les annonces actuelles de l'UM6P concernent uniquement les campus de **Rabat** et **Ben Guerir**."
+                )
+            else:
+                return (
+                    f"No events or workshops found for **{detected_loc}**. "
+                    "Current UM6P announcements are exclusively for the **Rabat** and **Ben Guerir** campuses."
+                )
+
+        if detected_lang == "Moroccan Darija":
+            return (
+                "Smh lia, malqit hta chi event kaynaseb had l-bahth f les annonces l-halyin. "
+                "Jreb tqelleb b kelmat khrin (matalan: *hackathon, robotics, IA, 1337, CTF*)!"
+            )
+        elif detected_lang == "French":
+            return (
+                "Désolé, aucun événement correspondant n'a été trouvé dans la base actuelle. "
+                "Essayez avec d'autres mots-clés (ex: *hackathon, robotique, IA, 1337, CTF*)."
+            )
+        else:
+            return (
+                "Sorry, no matching events were found in the current campus database. "
+                "Try searching with different keywords (e.g., *hackathon, robotics, AI, 1337, CTF*)."
+            )
 
     def _generate_gemini_answer(
         self,
@@ -279,6 +322,9 @@ class TrilingualAdvisor:
             "2. Ground your answer strictly in the provided Announcements context.\n"
             "3. ALWAYS state the campus (Rabat vs Ben Guerir) and clearly highlight if there is a conflict or if travel is required.\n"
             "4. Keep the answer structured and under 150 words. Offer the 1-click calendar (.ics) option.\n"
+            "5. CRITICAL NEGATIVE CONSTRAINT: If the user query specifies a city/campus with no events (e.g. Marrakech, Casablanca), "
+            "or asks for an event type that does not exist in the announcements, YOU MUST CLEARLY STATE THAT NO EVENT EXISTS THERE. "
+            "NEVER hallucinate, invent an event, or substitute an event from another city!\n"
         )
 
         user_prompt = (

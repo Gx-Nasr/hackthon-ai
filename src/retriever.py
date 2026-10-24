@@ -152,24 +152,71 @@ class HybridRetriever:
                 matrix[i] /= norm
         self.embeddings = matrix
 
+    @staticmethod
+    def extract_location_filter(query: str) -> Optional[str]:
+        """
+        Extracts requested campus or city constraint from query in Darija, French, or English.
+        Examples:
+        - 'f marrakech', 'à marrakech', 'in marrakech', 'marrakech', 'kech' -> 'Marrakech'
+        - 'f rabat', 'à rabat', 'in rabat', 'rabat', 'salé' -> 'Rabat'
+        - 'f ben guerir', 'benguerir', 'ben guerir' -> 'Ben Guerir'
+        - 'f casa', 'casablanca', 'in casablanca' -> 'Casablanca'
+        """
+        q_lower = query.lower()
+
+        # Check Ben Guerir variations
+        if any(term in q_lower for term in ["ben guerir", "benguerir", "bengrir", "ben-guerir"]):
+            return "Ben Guerir"
+
+        # Check Rabat / Salé variations
+        if re.search(r"\b(rabat|salé|sale)\b", q_lower):
+            return "Rabat"
+
+        # Check other Moroccan cities
+        for city in ["marrakech", "marrakesh", "kech", "casablanca", "casa", "tanger", "tangier", "agadir", "fes", "fez", "meknes", "oujda"]:
+            if re.search(rf"\b{city}\b", q_lower):
+                if city in ["marrakech", "marrakesh", "kech"]:
+                    return "Marrakech"
+                if city in ["casablanca", "casa"]:
+                    return "Casablanca"
+                return city.capitalize()
+
+        return None
+
     def search(
         self,
         query: str,
         top_k: int = 5,
-        filter_campus: Optional[str] = None
+        filter_campus: Optional[str] = None,
+        min_score_threshold: float = 0.25
     ) -> List[SearchResult]:
         """
-        Executes hybrid search combining dense semantic similarity and BM25 lexical match.
-        Uses Reciprocal Rank Fusion (RRF) and normalized hybrid scoring.
+        Executes strict hybrid search combining dense semantic similarity and BM25 lexical match.
+        Enforces explicit location filtering and calibrated relevance thresholds.
         """
         if not self.announcements:
             return []
+
+        # 1. Location / Campus Detection
+        target_loc = filter_campus or self.extract_location_filter(query)
+
+        # If a specific location was requested, verify if ANY announcement exists in that location
+        if target_loc:
+            has_matching_loc = any(
+                target_loc.lower() in ann.campus.lower()
+                or target_loc.lower() in ann.venue.lower()
+                or target_loc.lower() in ann.description.lower()
+                for ann in self.announcements
+            )
+            # If the user asks for a city with no events at all (e.g. Marrakech), strictly return empty
+            if not has_matching_loc:
+                return []
 
         n_docs = len(self.announcements)
         dense_scores = np.zeros(n_docs, dtype=np.float32)
         bm25_scores = np.zeros(n_docs, dtype=np.float32)
 
-        # 1. Compute Dense Semantic Scores
+        # 2. Compute Dense Semantic Scores
         model = self._get_embedding_model()
         if model is not None and self.embeddings is not None and self.embeddings.shape[0] == n_docs:
             try:
@@ -182,7 +229,6 @@ class HybridRetriever:
             q_tokens = self._tokenize_text(query)
             q_vec = np.zeros(self.embeddings.shape[1], dtype=np.float32)
             for t in q_tokens:
-                # simple hash or keyword matching
                 idx = hash(t) % self.embeddings.shape[1]
                 q_vec[idx] += 1.0
             q_norm = np.linalg.norm(q_vec)
@@ -190,7 +236,7 @@ class HybridRetriever:
                 q_vec /= q_norm
                 dense_scores = np.dot(self.embeddings, q_vec)
 
-        # 2. Compute BM25 Lexical Scores
+        # 3. Compute BM25 Lexical Scores
         q_tokens = self._tokenize_text(query)
         if BM25S_AVAILABLE and self.bm25_retriever is not None and q_tokens:
             try:
@@ -203,7 +249,6 @@ class HybridRetriever:
                     retrieved_docs = results[0]
                     retrieved_scores = scores[0]
                     for d_idx, doc in enumerate(retrieved_docs):
-                        # match doc by id
                         for orig_i, orig_a in enumerate(self.announcements):
                             if orig_a.id == doc.id:
                                 bm25_scores[orig_i] = float(retrieved_scores[d_idx])
@@ -211,25 +256,31 @@ class HybridRetriever:
             except Exception:
                 pass
 
-        # If BM25s had no results or wasn't available, calculate simple term overlap
+        # Fallback term overlap
         if np.max(bm25_scores) == 0.0 and q_tokens:
             for i, text in enumerate(self.doc_texts):
                 doc_toks = set(self._tokenize_text(text))
                 match_count = sum(1 for q in q_tokens if q in doc_toks)
                 bm25_scores[i] = match_count / (len(q_tokens) + 1e-5)
 
-        # 3. Normalize scores between 0 and 1
-        def _normalize(arr: np.ndarray) -> np.ndarray:
-            min_v, max_v = np.min(arr), np.max(arr)
-            if max_v - min_v > 1e-6:
-                return (arr - min_v) / (max_v - min_v)
-            return np.zeros_like(arr) if max_v == 0 else np.ones_like(arr) * 0.5
+        # 4. Calibrated Score Calculation (avoid relative min-max distortion)
+        # Cosine similarity typically relevant >= 0.35; scale [0.25, 0.75] -> [0.0, 1.0]
+        calibrated_dense = np.clip((dense_scores - 0.25) / 0.50, 0.0, 1.0)
 
-        norm_dense = _normalize(dense_scores)
-        norm_bm25 = _normalize(bm25_scores)
+        # Scale BM25 scores
+        max_bm = np.max(bm25_scores)
+        if max_bm > 0:
+            calibrated_bm25 = np.clip(bm25_scores / (max_bm + 1e-6), 0.0, 1.0)
+        else:
+            calibrated_bm25 = np.zeros_like(bm25_scores)
 
-        # 4. Hybrid Combination: alpha * dense + (1 - alpha) * bm25
-        final_scores = (self.alpha * norm_dense) + ((1.0 - self.alpha) * norm_bm25)
+        # Combine: alpha * dense + (1 - alpha) * bm25
+        final_scores = (self.alpha * calibrated_dense) + ((1.0 - self.alpha) * calibrated_bm25)
+
+        # Zero out irrelevant background noise (low cosine similarity + 0 BM25 hits)
+        for i in range(n_docs):
+            if dense_scores[i] < 0.28 and bm25_scores[i] == 0:
+                final_scores[i] = 0.0
 
         # 5. Sort and filter
         ranked_indices = np.argsort(-final_scores)
@@ -237,15 +288,27 @@ class HybridRetriever:
         results: List[SearchResult] = []
         for idx in ranked_indices:
             ann = self.announcements[idx]
-            if filter_campus and ann.campus.lower() != filter_campus.lower():
+
+            # Strict location filtering
+            if target_loc:
+                loc_match = (
+                    target_loc.lower() in ann.campus.lower()
+                    or target_loc.lower() in ann.venue.lower()
+                    or target_loc.lower() in ann.description.lower()
+                )
+                if not loc_match:
+                    continue
+
+            # Strict relevance threshold
+            if final_scores[idx] < min_score_threshold:
                 continue
 
             results.append(
                 SearchResult(
                     announcement=ann,
                     score=float(final_scores[idx]),
-                    dense_score=float(norm_dense[idx]),
-                    bm25_score=float(norm_bm25[idx])
+                    dense_score=float(calibrated_dense[idx]),
+                    bm25_score=float(calibrated_bm25[idx])
                 )
             )
             if len(results) >= top_k:
