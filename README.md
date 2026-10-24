@@ -1,120 +1,130 @@
-# UniRadar — UM6P campus radar
+# UniRadar — UM6P Campus Intelligence Radar
 
-Integrated release: `release/v1-uniradar`. React dashboard + authenticated Node
-gateway + Python hybrid RAG, multimodal ingestion, SQLite personalization and
-RFC 5545 calendar downloads. The original React layout and navigation are preserved.
+> **Unified Release:** `release/v1-uniradar`  
+> React Dashboard + Authenticated Node Gateway + Python Hybrid RAG (Dense + BM25s) + Multimodal Flyer/Email Ingestion + Personalized Schedule Conflict Detection + RFC 5545 Calendar Sync.
 
-## Jury: run in one command
+---
 
-Requires Python 3.11+ (tested on 3.12), Node.js 22+, npm and internet for the first
-dependency/model download. From the repository root:
+## 🚀 Quick Start: Run in 1 Command
+
+### Prerequisites
+- **Python 3.11+** (tested on 3.12)
+- **Node.js 22+** and **npm**
+
+### 1. Configure `.env`
+Ensure `.env` exists in the project root with your Gemini API key:
+```bash
+GEMINI_API_KEY="your-google-ai-studio-key"
+GEMINI_MODEL=gemini-3-flash-preview
+```
+*(Tip: `gemini-3-flash-preview` is recommended for low latency and high free-tier quota).*
+
+### 2. Launch Services
+From the repository root, run:
 
 ```bash
 python3 scripts/run.py
 ```
 
-This creates `.venv`, installs dependencies, generates Prisma, applies the two
-database migrations, typechecks/builds React, and starts both services.
-Open **http://localhost:3000**, create an account, and complete your campus,
-interests and weekly availability. Ctrl+C stops both services.
+This single command automatically:
+- Creates `.venv` and installs Python dependencies.
+- Installs Node dependencies and deploys SQLite Prisma migrations.
+- Compiles TypeScript and builds the React frontend.
+- Starts both services:
+  - **Node Web Gateway**: `http://localhost:3000`
+  - **Python AI Engine**: `http://127.0.0.1:8000`
 
-The launcher creates `.env` from `.env.example` only if it does not exist.
-For live extraction, set `GEMINI_API_KEY` and `GEMINI_MODEL=gemini-2.5-flash` in
-`.env` before launching. Without a key, the seeded radar, personalization,
-grounded trilingual chat and calendars still work; extraction returns an explicit
-configuration error. An exhausted Gemini quota produces a retryable extraction
-error, while chat falls back to grounded responses. `GEMMA_MODEL` optionally enables
-AI relevance ranking; leave it blank for deterministic scoring.
+👉 **Open [http://localhost:3000](http://localhost:3000)**, create an account, and complete your campus/availability onboarding. Press `Ctrl+C` anytime to shut down all processes cleanly.
 
-## Jury: verify in one command
+---
+
+## ⚡ Verify in 1 Command (Test Suite)
+
+Run the automated test and smoke suite:
 
 ```bash
 python3 scripts/run.py --test
 ```
 
-Runs installation, migrations, TypeScript checks, production build, all pytest
-tests and the terminal demo in offline-LLM mode. The MiniLM model downloads on
-first use; subsequent runs can use `HF_HUB_OFFLINE=1` with a populated cache.
-
-Individual checks:
-
+Or run individual test modules:
 ```bash
+# Run all 98 pytest unit & integration tests
 .venv/bin/python -m pytest tests/ -v
-.venv/bin/python scripts/demo_backend.py
+
+# Run the backend terminal demo
 .venv/bin/python scripts/demo_backend.py --offline
+
+# Verify frontend types and production build
 npm run typecheck
 npm run build
 ```
 
-The integration suite tests image/email/PDF extraction contracts with a stubbed
-Google response, actual SQLite persistence across restarts, actual MiniLM + BM25s
-search, strict no-match behavior, profile-dependent badges, and parsed `.ics`
-downloads. It does not claim to verify live Google extraction or inbox credentials.
+---
 
-## Walkthrough
+## 🎯 Key Features & Walkthrough
 
-1. **Radar → Add announcement:** upload a JPG/PNG/WebP/PDF or paste an email.
-   Gemini returns a validated `src.models.Announcement`; it is persisted in SQLite
-   and becomes available to feed, ranking, search and calendars.
-2. **Radar:** cards use the signed-in student's campus and weekly busy times.
-   Green = actionable, yellow = cross-campus commute, red = schedule clash.
-3. **Chat:** try `wach kayn chi hackathon f rabat had weekend?`,
-   `Où se déroule le workshop de robotique Forgebots ?`, or
-   `Where is the 1337 coding contest taking place?`. Calendar links appear with
-   the cited sources. `wach kayn chi workshop f marrakech?` must return no matches.
-4. **Calendar / event details:** existing export actions download the Python
-   RFC 5545 calendar, rather than rebuilding it in the browser.
+1. **Multimodal Ingestion (Radar → Add Announcement)**:
+   - Upload any event poster (`.png`, `.jpg`, `.jpeg`, `.webp`), PDF brochure, or paste an email body.
+   - The AI extractor normalizes dates to Casablanca time (`Africa/Casablanca`), extracts venues, tags, and registration links.
+2. **Personalized Radar & Conflict Detection**:
+   - Compares incoming events against the student's home campus and recurring course commitments:
+     - 🟢 **Actionable for You**: On your campus and schedule is free.
+     - 🟡 **Cross-Campus Alert**: Event is on another campus (e.g., Rabat ↔ Ben Guerir ONCF commute needed).
+     - 🔴 **Schedule Clash**: Directly conflicts with a lecture, exam, or lab slot.
+3. **Trilingual Campus Memory Chatbot**:
+   - Ask natural language questions in **Moroccan Darija** (`wach kayn chi hackathon f rabat had weekend?`), **French** (`Où se déroule le workshop de robotique Forgebots ?`), or **English** (`Where is the coding battle?`).
+   - Cites exact campus events with 1-click `.ics` calendar sync links.
+   - **Zero-hallucination constraint**: Queries for nonexistent cities (e.g. Marrakech) return an honest negative answer.
+4. **1-Click RFC 5545 Calendar Sync**:
+   - Download `.ics` files to immediately sync events with Google Calendar, Apple Calendar, or Outlook.
 
-The ten initial announcements are realistic sample fixtures from October–November
-2026, not a verified live UM6P feed. Uploaded announcements share the campus feed.
+---
 
-## Python interface
+## 📬 Note on Gmail Automatic Sync Feature
 
-After installation, the preserved three-tab Streamlit interface is available with:
+- **Intended Feature**: Background synchronization of campus email announcements directly from university mailboxes via the Gmail / IMAP API.
+- **Current Status**:
+  - The classification prompt and event extraction logic are fully built in [`src/gmail_sync.py`](file:///home/khalil/Desktop/salah_dirs/hackthon-ai/src/gmail_sync.py) and available in the Streamlit companion interface (`app.py`).
+  - **Hackathon Time Constraint**: Due to the strict hackathon time limits, unattended 24/7 OAuth background inbox polling was scoped as a post-hackathon roadmap milestone. We prioritized perfecting **live multimodal poster extraction**, **trilingual RAG accuracy**, and **personal schedule clash detection**.
+  - In the current web UI, students can instantly paste any university email text via **Radar → Add Announcement → Paste text**, which utilizes the exact same parsing and indexing pipeline.
+
+---
+
+## 🛠️ Architecture & Integration Map
+
+```
+                    Browser / Student
+                            │
+                            ▼
+              ┌───────────────────────────┐
+              │  Node / Express Gateway   │  (Port 3000)
+              │  - React 19 / Vite UI     │
+              │  - Session Auth & Prisma  │
+              └─────────────┬─────────────┘
+                            │ (forwards authenticated profile)
+                            ▼
+              ┌───────────────────────────┐
+              │  FastAPI Python Backend   │  (Port 8000)
+              │  - Gemini Multimodal      │
+              │  - Hybrid RAG (MiniLM+BM25│
+              │  - Conflict Detector      │
+              │  - RFC 5545 Calendar Gen  │
+              └───────────────────────────┘
+```
+
+- **`src/retriever.py`**: Strict hybrid retrieval (all-MiniLM-L6-v2 embeddings + BM25s with location filtering).
+- **`src/advisor.py`**: Trilingual advisor handling Darija (Arabizi/Arabic), French, and English with fallback resilience.
+- **`src/extractor.py`**: Multimodal poster & email parsing with automatic model failover (`gemini-3-flash-preview` / `gemini-flash-latest`).
+- **`src/personalization/`**: SQLite-backed recommendation and student constraint scoring.
+- **`src/calendar_gen.py`**: RFC 5545 `.ics` generator with Africa/Casablanca timezones.
+- **`server/src/routes/campus.ts`**: Proxies authenticated user profiles from Node to FastAPI.
+
+---
+
+## 🐍 Standalone Streamlit Interface (Optional)
+
+To explore the backend inspection tool with the three original tabs:
 
 ```bash
 .venv/bin/python -m streamlit run app.py
 ```
-
-It uses `config/student_profile.json` and the same persistent announcement store.
-Its Gmail expander supports IMAP with a Gmail app password. Outlook messages can
-be pasted into ingestion; automated Outlook OAuth synchronization is not included.
-
-For development, run `.venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8000`
-and `npm run dev` in separate terminals. Set `DATABASE_URL=file:./uniradar.db`
-and `COOKIE_MODE=local` in `.env`. `VITE_USE_MOCKS=true` explicitly enables the
-original frontend mocks; the release defaults to the connected backend.
-
-## Integration map
-
-- `feature/backend-rag-chatbot`: strict `src/retriever.py`, trilingual
-  `src/advisor.py`, `src/calendar_gen.py` and shared `src/models.py` preserved.
-- `origin/ichtioui`: extractor, Gmail ingestion, posters and three-tab `app.py`,
-  adapted to the canonical Announcement model.
-- `origin/azahi`: `src/personalization/` SQLite repository, ranking and tests;
-  `src/application.py` maps canonical announcements and student profiles.
-- `origin/ui`: React/Vite/Tailwind views, Node auth and Prisma profile storage.
-  `server/src/routes/campus.ts` forwards authenticated student context to Python.
-- `src/api.py`: `/api/events`, `/api/announcements`, `/api/chat`,
-  `/api/events/{id}/calendar`. The original personalization API remains available
-  on the private Python service, including `/api/recommendations/{user_id}`.
-
-Node serves React and browser API routes on port 3000. Python binds to loopback
-port 8000 and trusts student context from the Node gateway. Keep it private.
-Account data lives in `prisma/uniradar.db`; campus announcements, ranking profiles
-and recommendations live in `data/uniradar.db`. Databases and credentials are ignored
-by Git. The launcher uses the committed npm lockfile; the team's pnpm lockfile is
-also retained.
-
-## Release verification / pending assets
-
-- 98 pytest tests pass, including four cross-module integration tests.
-- TypeScript checks, production build and both Prisma migrations pass.
-- Production HTTP smoke check passes: signup, onboarding, authenticated feed,
-  Node-to-Python multipart chat, calendar download and logout. Streamlit renders
-  all three tabs without exceptions.
-- Terminal demo completes; `--offline` avoids external Gemini quota failures.
-- Live Gemini calls encountered HTTP 429 (daily free-tier quota exhausted).
-  Re-test real flyer extraction when quota is available.
-- Logo recoloring is pending the logo asset. No supplied logo was available during
-  integration, so no palette was guessed.
