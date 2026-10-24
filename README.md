@@ -80,6 +80,14 @@ npm run build
 
 ---
 
+## 🎥 Demo Walkthrough Videos
+
+Recorded live demonstrations showing UniRadar in action:
+- **UI & Dashboard Walkthrough**: [`Screencast from 2026-10-24 17-00-37.mp4`](file:///home/khalil/Desktop/salah_dirs/hackthon-ai/Screencast%20from%202026-10-24%2017-00-37.mp4) (Navigation, calendar onboarding, and radar overview)
+- **Interactive Features Demo**: [`Screencast from 2026-10-24 17-02-18.mp4`](file:///home/khalil/Desktop/salah_dirs/hackthon-ai/Screencast%20from%202026-10-24%2017-02-18.mp4) (Flyer upload extraction, trilingual Darija/FR/EN chat, and 1-click .ics export)
+
+---
+
 ## 📬 Note on Gmail Automatic Sync Feature
 
 - **Intended Feature**: Background synchronization of campus email announcements directly from university mailboxes via the Gmail / IMAP API.

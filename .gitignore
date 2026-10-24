@@ -40,4 +40,3 @@ prisma/*.db*
 *.tsbuildinfo
 test-results/
 playwright-report/
-*.mp4
