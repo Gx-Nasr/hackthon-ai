@@ -6,6 +6,7 @@ from fastapi import FastAPI
 
 from src.personalization.database import Database, get_database
 from src.personalization.routes import router
+from src.api import router as campus_router
 
 
 def create_app(database: Database | None = None) -> FastAPI:
@@ -21,6 +22,7 @@ def create_app(database: Database | None = None) -> FastAPI:
     if database is not None:
         application.dependency_overrides[get_database] = lambda: database
     application.include_router(router)
+    application.include_router(campus_router)
     return application
 
 

@@ -41,6 +41,7 @@ export interface CampusEvent {
   sourceName?: string;
   sourceUrl?: string;
   actionUrl?: string;
+  calendarUrl?: string;
   isDemo?: boolean;
 }
 

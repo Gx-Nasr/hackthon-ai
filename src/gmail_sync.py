@@ -5,6 +5,7 @@ import json
 import os
 from google import genai
 from google.genai import types
+from src.extractor import normalize_announcement
 
 CLASSIFY_AND_EXTRACT_PROMPT = """
 You are UniRadar's Campus Email Filter.
@@ -35,7 +36,7 @@ class GmailEventSync:
         self.user = email_user
         self.password = app_password
         self.client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-        self.model_id = "gemma-4-26b-a4b-it"
+        self.model_id = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
     def _get_clean_body(self, msg) -> str:
         body = ""
@@ -97,7 +98,7 @@ class GmailEventSync:
                         # If Gemma verifies it's an event, keep it
                         if parsed.get("is_event"):
                             parsed.pop("is_event", None)
-                            events_found.append(parsed)
+                            events_found.append(normalize_announcement(parsed, "email"))
 
             mail.close()
             mail.logout()

@@ -33,3 +33,8 @@ data/cache_embeddings.npy
 data/cache_bm25/
 data/calendars/*.ics
 !data/calendars/.gitkeep
+node_modules/
+dist/
+data/*.db*
+prisma/*.db*
+*.tsbuildinfo

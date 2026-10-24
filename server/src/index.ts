@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { prisma } from './db.js';
 import { authRouter } from './routes/auth.js';
 import { profileRouter } from './routes/profile.js';
+import { campusRouter } from './routes/campus.js';
 
 const app = express();
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -39,6 +40,7 @@ app.use(cookieParser());
 app.get('/api/health', (_request, response) => response.json({ status: 'ok', service: 'uniradar' }));
 app.use('/api/auth', authRouter);
 app.use('/api', profileRouter);
+app.use(['/api/events', '/api/announcements', '/api/chat'], campusRouter);
 app.use('/api', (_request, response) => response.status(404).json({ message: 'This API route is not connected yet.', code: 'API_NOT_CONFIGURED' }));
 
 const isProduction = process.env.NODE_ENV === 'production';

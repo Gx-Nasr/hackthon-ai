@@ -2,7 +2,7 @@ import type { ApiErrorShape } from '../types';
 
 const configuredBase = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/$/, '');
 export const API_BASE = configuredBase ?? '';
-export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS !== 'false';
+export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === 'true';
 
 export class ApiError extends Error {
   status: number;

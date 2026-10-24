@@ -10,6 +10,7 @@ import { AddAnnouncementModal } from '../components/radar/AddAnnouncementModal';
 import { EventDetailModal } from '../components/radar/EventDetailModal';
 import { Button, DemoLabel } from '../components/ui/Controls';
 import { LoadingState } from '../components/ui/States';
+import { USE_MOCKS } from '../lib/api';
 
 export function RadarPage() {
   const { language, t } = useLanguage();
@@ -67,7 +68,7 @@ export function RadarPage() {
     </section>
     <div className="results-heading"><div><strong>{filtered.length} {filtered.length === 1 ? 'signal' : language === 'fr' ? 'signaux' : 'signals'}</strong><span> {t('currentView')}</span></div><DemoLabel /></div>
     {query.isLoading ? <LoadingState label="Loading event signals…" /> : query.error ? <div className="empty-state"><strong>Radar couldn’t reach the event feed.</strong><p>Try again, or check that the teammate service is configured.</p><button onClick={() => void query.refetch()}>Retry</button></div> : filtered.length ? <div className="event-grid radar-grid">{filtered.map((event) => <EventCard key={event.id} event={event} onDetails={setSelected} />)}</div> : <div className="empty-state"><span className="empty-icon"><Filter size={20} /></span><strong>{language === 'fr' ? 'Aucun signal ne correspond à ces filtres' : 'No signals match those filters'}</strong><p>{language === 'fr' ? 'Élargissez le campus, la catégorie ou la période.' : 'Try a broader campus, category, or date range.'}</p><button onClick={() => { setSearch(''); setCampus('all'); setCategory('all'); setDateRange('all'); setRelevance('all'); }}>{t('clearFilters')}</button></div>}
-    <div className="radar-note"><span className="demo-dot" /><span>Demo data only · No verified live campus feed is connected.</span></div>
+    <div className="radar-note"><span className="demo-dot" /><span>{USE_MOCKS ? 'Demo data only · No verified live campus feed is connected.' : 'Campus feed · Sample announcements and your extracted uploads.'}</span></div>
     <AddAnnouncementModal open={announcementOpen} onOpenChange={setAnnouncementOpen} />
     <EventDetailModal event={selected} onOpenChange={(open) => { if (!open) setSelected(null); }} />
   </div>;

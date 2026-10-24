@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { USE_MOCKS } from '../../lib/api';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger';
@@ -42,5 +43,5 @@ export function Badge({ children, tone = 'neutral', className }: { children: Rea
 }
 
 export function DemoLabel({ small = false }: { small?: boolean }) {
-  return <span className={cn('demo-label', small && 'demo-label-small')}><span className="demo-dot" />Demo data</span>;
+  return <span className={cn('demo-label', small && 'demo-label-small')}><span className="demo-dot" />{USE_MOCKS ? 'Demo data' : 'Campus data'}</span>;
 }

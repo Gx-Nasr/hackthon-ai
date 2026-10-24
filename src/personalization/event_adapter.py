@@ -31,6 +31,9 @@ CAMPUS_NAMES = {
 
 
 def adapt_event(record: object) -> Event:
+    from src.models import Announcement
+    if isinstance(record, Announcement):
+        record = record.model_dump(mode="json")
     if not isinstance(record, dict):
         raise ValueError("Record must be a JSON object")
     data = {}

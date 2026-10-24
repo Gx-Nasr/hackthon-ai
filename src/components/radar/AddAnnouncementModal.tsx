@@ -4,11 +4,14 @@ import { toast } from 'sonner';
 import { eventsService } from '../../services/eventsService';
 import { Button } from '../ui/Controls';
 import { Modal } from '../ui/Modal';
+import { useQueryClient } from '@tanstack/react-query';
+import { USE_MOCKS } from '../../lib/api';
 
 const MAX_FILE_SIZE = 12 * 1024 * 1024;
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 
 export function AddAnnouncementModal({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const queryClient = useQueryClient();
   const [mode, setMode] = useState<'file' | 'text'>('file');
   const [file, setFile] = useState<File | null>(null);
   const [text, setText] = useState('');
@@ -43,6 +46,7 @@ export function AddAnnouncementModal({ open, onOpenChange }: { open: boolean; on
     try {
       const result = await eventsService.submitAnnouncement({ text: mode === 'text' ? text.trim() : undefined, file: mode === 'file' ? file ?? undefined : undefined });
       toast.success(result.message, { description: result.demo ? 'Demo data · No extraction was run.' : undefined });
+      await queryClient.invalidateQueries({ queryKey: ['events'] });
       onOpenChange(false);
       setFile(null);
       setText('');
@@ -69,7 +73,7 @@ export function AddAnnouncementModal({ open, onOpenChange }: { open: boolean; on
           <span className="upload-icon"><UploadCloud size={22} /></span><strong>Choose a file or drop it here</strong><span>JPG, PNG, WebP or PDF · up to 12 MB</span>
         </button>}
       </div> : <div className="field"><label htmlFor="announcement-text" className="field-label">Announcement text</label><textarea id="announcement-text" className="text-area" value={text} onChange={(event) => setText(event.target.value)} rows={7} placeholder="Paste the original message here…" /></div>}
-      <p className="demo-note"><span className="demo-dot" /> This is a handoff placeholder. No OCR or AI extraction is claimed unless a connected API returns it.</p>
+      <p className="demo-note"><span className="demo-dot" /> {USE_MOCKS ? 'Demo mode: no extraction is performed.' : 'Gemini extracts your announcement and saves it to the campus radar.'}</p>
       {error && <p className="field-error" role="alert">{error}</p>}
       <div className="modal-actions"><Button variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button><Button variant="primary" loading={submitting} onClick={() => void submit()}>{submitting ? 'Sending…' : 'Submit announcement'}</Button></div>
     </div>
