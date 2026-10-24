@@ -166,6 +166,7 @@ class TrilingualAdvisor:
         self.retriever = retriever
         self.profile = profile
         self.detector = ConflictDetector(profile)
+        load_dotenv(override=True)
         self.model_name = os.getenv("GEMINI_MODEL", model_name)
         self.api_key = os.getenv("GEMINI_API_KEY", "").strip()
         self._client = None
@@ -340,6 +341,7 @@ class TrilingualAdvisor:
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction,
                     temperature=0.3,
+                    thinking_config=types.ThinkingConfig(thinking_budget=0)
                 )
             )
             return response.text.strip()
