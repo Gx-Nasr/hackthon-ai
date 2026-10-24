@@ -2,6 +2,7 @@ import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react
 import { LoaderCircle } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { USE_MOCKS } from '../../lib/api';
+import { useId } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger';
@@ -25,7 +26,8 @@ interface FieldProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 export function Field({ label, error, hint, trailing, id, className, ...props }: FieldProps) {
-  const inputId = id ?? props.name;
+  const generatedId = useId();
+  const inputId = id ?? props.name ?? generatedId;
   const hintId = `${inputId}-hint`;
   const errorId = `${inputId}-error`;
   return <div className="field">

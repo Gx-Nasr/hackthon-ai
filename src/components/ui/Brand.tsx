@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 export function BrandMark({ compact = false }: { compact?: boolean }) {
   return <span className={`brand-mark${compact ? ' brand-mark-compact' : ''}`} aria-hidden="true">
-    <svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="15" stroke="currentColor" strokeOpacity=".27" strokeWidth="1.6" /><path d="M20 5a15 15 0 0 1 14.1 10L20 20V5Z" fill="currentColor" /><path d="m20 20 9 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /><circle cx="20" cy="20" r="2.7" fill="currentColor" /></svg>
+    <img src="/uniradar-mark.webp" alt="" width="36" height="36" />
   </span>;
 }
 

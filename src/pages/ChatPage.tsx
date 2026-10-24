@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { useLanguage } from '../contexts/LanguageContext';
 import { chatService } from '../services/chatService';
 import { USE_MOCKS } from '../lib/api';
+import { createLocalId } from '../lib/utils';
 import type { ChatMessage as MessageType } from '../types';
 import { ChatComposer } from '../components/chat/ChatComposer';
 import { ChatMessage } from '../components/chat/ChatMessage';
@@ -21,7 +22,7 @@ const suggested = [
 
 export function ChatPage() {
   const { language, t } = useLanguage();
-  const [firstId] = useState(() => crypto.randomUUID());
+  const [firstId] = useState(() => createLocalId());
   const [conversations, setConversations] = useState<Conversation[]>([{ id: firstId, title: 'New conversation', updatedAt: new Date().toISOString(), messages: [] }]);
   const [activeId, setActiveId] = useState<string>(firstId);
   const [sending, setSending] = useState(false);
@@ -36,7 +37,7 @@ export function ChatPage() {
   useEffect(() => () => objectUrls.current.forEach((url) => URL.revokeObjectURL(url)), []);
 
   function createConversation() {
-    const id = crypto.randomUUID();
+    const id = createLocalId();
     setConversations((current) => [{ id, title: 'New conversation', updatedAt: new Date().toISOString(), messages: [] }, ...current]);
     setActiveId(id);
     setFailed(null);
@@ -51,7 +52,7 @@ export function ChatPage() {
     setFailed(null);
     if (!retry) {
       const userMessage: MessageType = {
-        id: crypto.randomUUID(), role: 'user', text, createdAt: new Date().toISOString(),
+        id: createLocalId(), role: 'user', text, createdAt: new Date().toISOString(),
         attachments: files.map((file) => {
           const url = URL.createObjectURL(file);
           objectUrls.current.push(url);
@@ -67,7 +68,7 @@ export function ChatPage() {
     try {
       const response = await chatService.send({ message: text, conversationId: serverId, images: files });
       const answer: MessageType = {
-        id: crypto.randomUUID(), role: 'assistant', text: response.message, createdAt: new Date().toISOString(),
+        id: createLocalId(), role: 'assistant', text: response.message, createdAt: new Date().toISOString(),
         sources: response.sources, attachments: response.attachments, isDemo: response.demo ?? USE_MOCKS,
       };
       setConversations((current) => current.map((item) => item.id === conversationId ? {

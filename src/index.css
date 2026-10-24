@@ -5,56 +5,56 @@
 
 :root {
   font-family: 'DM Sans', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  color: #191c16;
-  background: #fafbf7;
+  color: #1b2735;
+  background: #f7f9fb;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --bg: #fafbf7;
+  --bg: #f7f9fb;
   --surface: #ffffff;
-  --surface-soft: #f4f6ef;
+  --surface-soft: #eef2f6;
   --surface-raised: #ffffff;
-  --text: #191c16;
-  --text-soft: #586151;
-  --muted: #7a8274;
-  --border: #e7eae1;
-  --border-strong: #d8ddcf;
-  --accent: #ff6a00;
-  --accent-strong: #e65700;
-  --accent-ink: #20140d;
-  --accent-text: #a94200;
-  --focus-ring: rgba(255,106,0,.72);
+  --text: #1b2735;
+  --text-soft: #526477;
+  --muted: #66788a;
+  --border: #e0e6ed;
+  --border-strong: #c7d2de;
+  --accent: #d93612;
+  --accent-strong: #ba2c0d;
+  --accent-ink: #ffffff;
+  --accent-text: #b72e10;
+  --focus-ring: rgba(235,59,18,.72);
   --success: #2e8051;
   --warning: #a86717;
   --danger: #b54d48;
   --danger-soft: #fff0ed;
-  --accent-soft: #fff0e5;
-  --shadow: 0 10px 32px rgba(34, 43, 22, .07);
-  --shadow-small: 0 3px 12px rgba(34, 43, 22, .06);
+  --accent-soft: #fff0eb;
+  --shadow: 0 10px 32px rgba(27, 39, 53, .07);
+  --shadow-small: 0 3px 12px rgba(27, 39, 53, .06);
   --radius: 16px;
   --sidebar-width: 256px;
 }
 :root.dark {
-  color: #f4f5ef;
-  background: #111110;
-  --bg: #111110;
-  --surface: #1e1d1b;
-  --surface-soft: #181817;
-  --surface-raised: #242320;
-  --text: #f4f5ef;
-  --text-soft: #b9c0ad;
-  --muted: #8d9684;
-  --border: #302e2a;
-  --border-strong: #45423d;
-  --accent: #ff6a00;
-  --accent-strong: #ff7a1c;
-  --accent-ink: #20140d;
-  --accent-text: #ff9a5e;
-  --focus-ring: rgba(255,154,94,.82);
+  color: #f7f9fc;
+  background: #15202d;
+  --bg: #15202d;
+  --surface: #1b2735;
+  --surface-soft: #182330;
+  --surface-raised: #253445;
+  --text: #f7f9fc;
+  --text-soft: #bcc9d6;
+  --muted: #96a8bb;
+  --border: #324255;
+  --border-strong: #4a5f76;
+  --accent: #ff7045;
+  --accent-strong: #ff8965;
+  --accent-ink: #15202d;
+  --accent-text: #ff997b;
+  --focus-ring: rgba(255,153,123,.82);
   --success: #79cf98;
   --warning: #f0bd6e;
   --danger: #f28b82;
   --danger-soft: #382321;
-  --accent-soft: #3b251a;
+  --accent-soft: #3b2b2b;
   --shadow: 0 12px 36px rgba(0, 0, 0, .22);
   --shadow-small: 0 3px 12px rgba(0, 0, 0, .18);
 }
@@ -97,7 +97,7 @@ a { color: inherit; }
 .text-link:hover { color: var(--text); }
 .badge { display: inline-flex; min-height: 23px; align-items: center; gap: 5px; border-radius: 100px; padding: 3px 8px; font-size: 10px; line-height: 1.2; font-weight: 700; white-space: nowrap; }
 .badge-neutral { color: var(--text-soft); background: var(--surface-soft); border: 1px solid var(--border); }
-.badge-brand { color: var(--accent-ink); background: var(--accent-soft); border: 1px solid rgba(255, 106, 0, .28); }
+.badge-brand { color: var(--accent-text); background: var(--accent-soft); border: 1px solid rgba(235, 59, 18, .28); }
 .badge-warning { color: var(--warning); background: color-mix(in srgb, var(--warning) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--warning) 22%, var(--border)); }
 .badge-success { color: var(--success); background: color-mix(in srgb, var(--success) 10%, var(--surface)); }
 .badge-danger { color: var(--danger); background: var(--danger-soft); }
@@ -123,12 +123,12 @@ a { color: inherit; }
 
 /* Brand and shared shell */
 .brand-lockup { display: inline-flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; }
-.brand-mark { display: inline-flex; width: 36px; height: 36px; flex: 0 0 auto; align-items: center; justify-content: center; border-radius: 11px; color: var(--accent); background: #191c16; }
-.brand-mark svg { width: 29px; height: 29px; }
+.brand-mark { display: inline-flex; width: 36px; height: 36px; flex: 0 0 auto; align-items: center; justify-content: center; border-radius: 11px; color: var(--accent); background: #1b2735; }
+.brand-mark img { width: 100%; height: 100%; object-fit: contain; border-radius: inherit; }
 .brand-mark-compact { width: 29px; height: 29px; border-radius: 9px; }
 .brand-mark-compact svg { width: 24px; height: 24px; }
 .brand-name { color: var(--text); font-family: Manrope, 'DM Sans', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -.045em; }
-.brand-name span { font-weight: 600; }
+.brand-name span { color: var(--accent); font-weight: 600; }
 .app-shell { display: flex; min-height: 100vh; background: var(--bg); }
 .sidebar { position: fixed; z-index: 15; inset: 0 auto 0 0; display: flex; width: var(--sidebar-width); flex-direction: column; border-right: 1px solid var(--border); padding: 26px 16px 15px; background: var(--surface); }
 .sidebar-brand { padding: 0 10px 36px; }
@@ -454,10 +454,25 @@ a { color: inherit; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
-/* UniRadar orange identity and responsive onboarding availability calendar */
-:root { --accent:#FF6A00; --accent-strong:#E65700; --accent-ink:#20140D; --accent-text:#A94200; --accent-soft:#FFF0E5; --focus-ring:rgba(255,106,0,.72); }
-:root.dark { --accent:#FF6A00; --accent-strong:#FF7A1C; --accent-ink:#20140D; --accent-text:#FF9A5E; --accent-soft:#3B251A; --focus-ring:rgba(255,154,94,.82); }
+/* UniRadar identity and responsive onboarding availability calendar */
 .brand-mark { color:var(--accent); } .auth-story .brand-mark { color:var(--accent-ink); background:var(--accent); }
+/* Colors sampled from the supplied UM6P radar artwork; layout stays unchanged. */
+::selection { background: rgba(235, 59, 18, .22); color: var(--text); }
+.auth-story { color: #f7f9fc; background: #1b2735; }
+.auth-story .brand-mark { background: #1b2735; }
+.auth-story .brand-name, .welcome-copy h2 { color: #f7f9fc; }
+.auth-story-copy h1 span, .auth-story .brand-name span { color: #ff7045; }
+.auth-story-copy > p, .welcome-copy > p:last-of-type { color: #bcc9d6; }
+.auth-story-foot, .story-signal small, .story-signal > svg, .orbit-caption { color: #96a8bb; }
+.auth-story-kicker { color: #ffad96; border-color: rgba(235, 59, 18, .3); }
+.welcome-panel { border-color: #324255; color: #f7f9fc; background: radial-gradient(circle at 79% 51%, rgba(235,59,18,.18), transparent 29%), linear-gradient(108deg, #1b2735 0%, #253445 100%); }
+.welcome-kicker, .welcome-kicker .demo-label, .welcome-date { color: #bcc9d6; }
+.welcome-panel .button-outline { color: #f7f9fc; border-color: rgba(247,249,252,.25); }
+.orbit, .auth-ring { border-color: rgba(235,59,18,.25); }
+.orbit-inner { border-color: rgba(235,59,18,.42); background: conic-gradient(from -24deg, rgba(235,59,18,.24), rgba(235,59,18,.02) 43%, transparent 43%); }
+.orbit-center { border-color: #1b2735; }
+.modal-overlay { background: rgba(15, 24, 36, .52); }
+.availability-calendar .availability-block { color: var(--accent-ink); background: var(--accent); border-color: var(--accent-strong); }
 .button-primary { color:var(--accent-ink); background:var(--accent); border-color:var(--accent); }
 .button-primary:hover:not(:disabled) { color:var(--accent-ink); background:var(--accent-strong); border-color:var(--accent-strong); }
 .badge-brand { color:var(--accent-text); background:var(--accent-soft); border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border)); }

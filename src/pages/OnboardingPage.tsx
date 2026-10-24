@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, ArrowRight, Check, GraduationCap, MapPin, Plus, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { profileService } from '../services/profileService';
@@ -10,12 +10,14 @@ import { WeeklyAvailabilityCalendar } from '../components/profile/WeeklyAvailabi
 import { Button } from '../components/ui/Controls';
 import { Field } from '../components/ui/Controls';
 import { LoadingState } from '../components/ui/States';
+import { BrandMark } from '../components/ui/Brand';
 
 const SUGGESTED_INTERESTS = ['Open Source', 'Artificial Intelligence', 'Low-Level Systems', 'Competitive Programming', 'Python', 'Robotics', 'Sports', 'Entrepreneurship'];
 type Draft = { fullName: string; homeCampus: HomeCampus | ''; school: string; interests: string[]; unavailableBlocks: AvailabilityBlock[] };
 const steps = ['Your profile', 'Weekly availability', 'Review'];
 export function OnboardingPage() {
   const { user, refresh } = useAuth(); const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ['profile'], queryFn: profileService.get });
   const [step, setStep] = useState(0); const [draft, setDraft] = useState<Draft>({ fullName: user?.name ?? '', homeCampus: '', school: '', interests: [], unavailableBlocks: [] });
   const [customInterest, setCustomInterest] = useState(''); const [error, setError] = useState(''); const [saving, setSaving] = useState(false);
@@ -35,13 +37,13 @@ export function OnboardingPage() {
     setSaving(true); setError('');
     try {
       const profile: ProfileUpdate = { fullName: draft.fullName.trim(), homeCampus: draft.homeCampus, school: draft.school.trim(), interests: draft.interests, unavailableBlocks: draft.unavailableBlocks };
-      await profileService.save(profile); await refresh(); toast.success('Your campus profile is ready.'); navigate('/app', { replace: true });
+      const saved = await profileService.save(profile); queryClient.setQueryData(['profile'], saved); await refresh(); toast.success('Your campus profile is ready.'); navigate('/app', { replace: true });
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Could not save your onboarding. Please try again.'); }
     finally { setSaving(false); }
   }
   if (query.isLoading) return <LoadingState label="Preparing your student profile…" />;
   if (query.error) return <main className="onboarding-error"><strong>Your profile could not load.</strong><p>Please retry before continuing so your saved information is preserved.</p><button onClick={() => void query.refetch()}>Retry</button></main>;
-  return <main className="onboarding-page"><header className="onboarding-header"><a href="/login" className="brand-lockup"><span className="brand-mark" aria-hidden="true">◉</span><span className="brand-name">Uni<span>Radar</span></span></a><span className="student-id-pill">Student ID · {query.data?.studentId ?? user?.studentId}</span></header>
+  return <main className="onboarding-page"><header className="onboarding-header"><a href="/login" className="brand-lockup"><BrandMark /><span className="brand-name">Uni<span>Radar</span></span></a><span className="student-id-pill">Student ID · {query.data?.studentId ?? user?.studentId}</span></header>
     <div className="onboarding-frame"><section className="onboarding-title"><p className="eyebrow">YOUR UNI RADAR · SETUP</p><h1>Make room for what matters.</h1><p>Tell us a little about your campus and the times you’re unavailable. You can update this any time in My Profile.</p></section>
       <div className="onboarding-steps" aria-label="Onboarding progress">{steps.map((label, index) => <div key={label} className={`onboarding-step${step === index ? ' active' : step > index ? ' complete' : ''}`}><span>{step > index ? <Check size={14} /> : index + 1}</span><strong>{label}</strong></div>)}</div>
       <section className="onboarding-card" aria-live="polite">

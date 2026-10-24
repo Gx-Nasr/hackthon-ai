@@ -3,6 +3,7 @@ import { CalendarPlus, Clock3, Pencil, Plus, Trash2 } from 'lucide-react';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Controls';
 import type { AvailabilityBlock, Weekday } from '../../types';
+import { createLocalId } from '../../lib/utils';
 
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
 const ACTIVITY_SUGGESTIONS = ['Lectures', 'Labs', 'Studying', 'Personal Commitments'];
@@ -30,13 +31,13 @@ export function WeeklyAvailabilityCalendar({ value, onChange }: { value: Availab
   function saveBlock(event: React.FormEvent) {
     event.preventDefault(); setError('');
     if (!timePattern.test(form.startTime) || !timePattern.test(form.endTime) || minutes(form.startTime) >= minutes(form.endTime)) { setError('End time must be later than start time. Choose a valid 24-hour time range.'); return; }
-    const overlaps = value.some((block) => block.dayOfWeek === form.dayOfWeek && block.id !== editing?.id && minutes(form.startTime) < minutes(block.endTime) && minutes(block.startTime) < minutes(form.endTime));
+    const overlaps = value.some((block) => block.dayOfWeek === form.dayOfWeek && block !== editing && minutes(form.startTime) < minutes(block.endTime) && minutes(block.startTime) < minutes(form.endTime));
     if (overlaps) { setError(`This time overlaps another busy block on ${DAY_NAMES[form.dayOfWeek - 1]}. Adjust the start or end time.`); return; }
-    const nextBlock: AvailabilityBlock = { ...form, activityName: form.activityName.trim() || null, ...(editing?.id ? { id: editing.id } : { id: crypto.randomUUID() }) };
-    onChange(editing ? value.map((block) => block.id === editing.id ? nextBlock : block) : [...value, nextBlock]);
+    const nextBlock: AvailabilityBlock = { ...form, activityName: form.activityName.trim() || null, id: editing?.id ?? createLocalId() };
+    onChange(editing ? value.map((block) => block === editing ? nextBlock : block) : [...value, nextBlock]);
     setSelectedDay(form.dayOfWeek); setDialogOpen(false);
   }
-  function deleteBlock() { if (editing) onChange(value.filter((block) => block.id !== editing.id)); setDialogOpen(false); }
+  function deleteBlock() { if (editing) onChange(value.filter((block) => block !== editing)); setDialogOpen(false); }
   function dayBlocks(day: Weekday) { return ordered.filter((block) => block.dayOfWeek === day); }
   function blockStyle(block: AvailabilityBlock) { return { top: `${minutes(block.startTime) / 1440 * 100}%`, height: `${Math.max(1.7, (minutes(block.endTime) - minutes(block.startTime)) / 1440 * 100)}%` }; }
   function column(day: Weekday, mobile = false) {

@@ -38,3 +38,5 @@ dist/
 data/*.db*
 prisma/*.db*
 *.tsbuildinfo
+test-results/
+playwright-report/

@@ -1,4 +1,5 @@
 import type { ChatResponse } from '../types';
+import { createLocalId } from '../lib/utils';
 
 // Demo-only interaction. No model, campus index, OCR or image understanding runs here.
 export async function getDemoChatResponse(message: string, images: File[]): Promise<ChatResponse> {
@@ -11,7 +12,7 @@ export async function getDemoChatResponse(message: string, images: File[]): Prom
     : 'Your attachments are ready for a connected campus assistant.';
 
   return {
-    conversationId: crypto.randomUUID(),
+    conversationId: createLocalId(),
     message: `${promptNote}${attachmentNote}\n\nThis is a demo response. No live campus data or AI processing is connected yet.`,
     demo: true,
   };
