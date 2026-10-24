@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FAFBF7" />
+    <meta name="description" content="Your campus, without the chaos. UniRadar helps UM6P students stay oriented." />
+    <title>UniRadar — Your Campus, Without the Chaos</title>
+    <script>
+      (() => {
+        try {
+          const saved = localStorage.getItem('uniradar-theme');
+          const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const dark = saved === 'dark' || (saved !== 'light' && saved !== 'dark' && systemDark);
+          document.documentElement.classList.toggle('dark', dark);
+        } catch { /* Storage can be unavailable in restricted browser contexts. */ }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
