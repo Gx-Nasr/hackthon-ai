@@ -1,0 +1,24 @@
+{
+  "user_id": "student_demo",
+  "campus": "Rabat",
+  "school": "Fictional Computing Department (demo)",
+  "major": "Computer Science",
+  "academic_year": "2",
+  "interests": ["robotics", "AI", "cybersecurity"],
+  "skills": ["Python", "teamwork"],
+  "goals": ["internships", "build robots"],
+  "preferred_event_types": ["hackathon", "workshop"],
+  "languages": ["English", "French"],
+  "willing_to_travel": true,
+  "availability": {
+    "timezone": "Africa/Casablanca",
+    "is_complete": true,
+    "weekly_busy": [
+      {"weekday": 0, "start_time": "09:00", "end_time": "12:00"},
+      {"weekday": 2, "start_time": "14:00", "end_time": "17:00"}
+    ],
+    "date_specific_busy": [
+      {"start_datetime": "2027-11-16T14:00:00+01:00", "end_datetime": "2027-11-16T16:00:00+01:00"}
+    ]
+  }
+}

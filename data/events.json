@@ -1,0 +1,129 @@
+{
+  "notice": "All ten events, organizers, venues and source references are fictional integration fixtures, not UM6P announcements. Links use the reserved example.org domain.",
+  "events": [
+    {
+      "id": "fictional_robotics_001",
+      "title": "[Fictional] Rabat Robotics Build Sprint",
+      "description": "Fictional UM6P-style hackathon: build small robots using Python, sensors and teamwork. Beginner AI projects are welcome.",
+      "event_type": "hackathon",
+      "topics": ["robotics", "Python", "AI", "teamwork"],
+      "campus": "Rabat",
+      "location": "Demo Engineering Studio A (fictional)",
+      "start_datetime": "2027-11-13T09:00:00+01:00",
+      "end_datetime": "2027-11-13T18:00:00+01:00",
+      "registration_deadline": "2027-11-12T18:00:00+01:00",
+      "registration_url": "https://example.org/fictional/robotics",
+      "source_id": "demo_email_001",
+      "source_url": "https://example.org/fictional/messages/001"
+    },
+    {
+      "id": "fictional_ai_002",
+      "title": "[Fictional] Ben Guerir Applied AI Workshop",
+      "description": "Fictional hands-on Python and AI workshop exploring computer vision and robotics datasets.",
+      "event_type": "workshop",
+      "topics": ["AI", "Python", "computer vision", "robotics"],
+      "campus": "Ben Guerir",
+      "location": "Demo Innovation Lab (fictional)",
+      "start_datetime": "2027-11-15T10:00:00+01:00",
+      "end_datetime": "2027-11-15T12:30:00+01:00",
+      "registration_deadline": "2027-11-14T12:00:00+01:00",
+      "registration_url": "https://example.org/fictional/ai-workshop",
+      "source_id": "demo_email_002"
+    },
+    {
+      "id": "fictional_security_003",
+      "title": "[Fictional] Online Cybersecurity Challenge",
+      "description": "Fictional capture-the-flag competition covering cybersecurity, Python scripting and teamwork. Joining instructions are not supplied.",
+      "event_type": "competition",
+      "topics": ["cybersecurity", "Python", "teamwork"],
+      "campus": "Online",
+      "location": null,
+      "start_datetime": "2027-11-17T15:00:00+01:00",
+      "end_datetime": "2027-11-17T18:00:00+01:00",
+      "registration_url": "https://example.org/fictional/security",
+      "source_id": "demo_email_003"
+    },
+    {
+      "id": "fictional_career_004",
+      "title": "[Fictional] Computing Internship Roundtable",
+      "description": "Fictional discussion of internships, Computer Science careers, teamwork and portfolio building with alumni characters.",
+      "event_type": "talk",
+      "topics": ["internships", "Computer Science", "careers"],
+      "campus": "Rabat",
+      "location": "Demo Career Room (fictional)",
+      "start_datetime": "2027-11-16T14:30:00+01:00",
+      "end_datetime": "2027-11-16T16:00:00+01:00",
+      "source_id": "demo_email_004"
+    },
+    {
+      "id": "fictional_energy_005",
+      "title": "[Fictional] Sustainable Energy Research Forum",
+      "description": "Fictional research conference on solar materials, energy storage and sustainable engineering.",
+      "event_type": "conference",
+      "topics": ["energy", "sustainability", "materials"],
+      "campus": "Ben Guerir",
+      "location": "Demo Research Hall (fictional)",
+      "start_datetime": "2027-11-18T09:00:00+01:00",
+      "end_datetime": "2027-11-18T17:00:00+01:00",
+      "registration_deadline": "2027-11-17T12:00:00+01:00",
+      "source_id": "demo_email_005"
+    },
+    {
+      "id": "fictional_startup_006",
+      "title": "[Fictional] Student Startup Pitch Evening",
+      "description": "Fictional student entrepreneurship competition for practicing public speaking, teamwork and networking.",
+      "event_type": "competition",
+      "topics": ["entrepreneurship", "public speaking", "teamwork"],
+      "campus": "Rabat",
+      "location": "Demo Student Hub (fictional)",
+      "start_datetime": "2027-11-19T18:00:00+01:00",
+      "end_datetime": "2027-11-19T20:00:00+01:00",
+      "source_id": "demo_email_006"
+    },
+    {
+      "id": "fictional_data_007",
+      "title": "[Fictional] Python Data Skills Clinic",
+      "description": "Fictional online workshop on Python data cleaning, visualization and reproducible analysis.",
+      "event_type": "workshop",
+      "topics": ["Python", "data science"],
+      "campus": "Online",
+      "start_datetime": "2027-11-20T10:00:00+01:00",
+      "end_datetime": "2027-11-20T12:00:00+01:00",
+      "source_id": "demo_email_007"
+    },
+    {
+      "id": "fictional_robotics_008",
+      "title": "[Fictional] Robotics Club Open Session — Date Pending",
+      "description": "Fictional robotics and AI club introduction. The source supplies no date, venue or registration link.",
+      "event_type": "meetup",
+      "topics": ["robotics", "AI"],
+      "campus": "Rabat",
+      "start_datetime": null,
+      "end_datetime": null,
+      "source_id": "demo_email_008"
+    },
+    {
+      "id": "fictional_design_009",
+      "title": "[Fictional] Inclusive Campus Design Jam",
+      "description": "Fictional design thinking workshop. Campus and venue have not been supplied by the source.",
+      "event_type": "workshop",
+      "topics": ["design", "accessibility", "teamwork"],
+      "campus": "Unknown",
+      "start_datetime": "2027-11-21T14:00:00+01:00",
+      "end_datetime": "2027-11-21T17:00:00+01:00",
+      "source_id": "demo_email_009"
+    },
+    {
+      "id": "fictional_archived_010",
+      "title": "[Fictional] Archived Robotics Talk",
+      "description": "Fictional past robotics event used to check expiry filtering; it must not appear in current recommendations.",
+      "event_type": "talk",
+      "topics": ["robotics", "Python"],
+      "campus": "Ben Guerir",
+      "location": "Demo Lecture Room (fictional)",
+      "start_datetime": "2024-01-10T10:00:00+01:00",
+      "end_datetime": "2024-01-10T12:00:00+01:00",
+      "source_id": "demo_email_010"
+    }
+  ]
+}
