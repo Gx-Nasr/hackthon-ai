@@ -1,0 +1,35 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables & secrets
+.env
+*.env
+!.env.example
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Testing and caches
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Local data cache & generated files
+data/cache_embeddings.npy
+data/cache_bm25/
+data/calendars/*.ics
+!data/calendars/.gitkeep

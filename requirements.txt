@@ -1,0 +1,11 @@
+google-genai>=1.0.0
+sentence-transformers>=3.0.0
+bm25s>=0.2.0
+numpy>=1.26.0
+pydantic>=2.7.0
+python-dotenv>=1.0.0
+icalendar>=5.0.12
+python-dateutil>=2.9.0
+pillow>=10.3.0
+streamlit>=1.35.0
+pytest>=8.0.0

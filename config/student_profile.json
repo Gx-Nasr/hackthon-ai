@@ -1,0 +1,77 @@
+{
+  "student_id": "um6p_cc_2026_042",
+  "name": "Salah Eddine",
+  "home_campus": "Rabat",
+  "school": "1337 coding school",
+  "program": "Architect in Digital Technology",
+  "interests": [
+    "AI",
+    "Robotics",
+    "Hackathons",
+    "Deep Learning",
+    "Competitive Programming",
+    "Web3",
+    "Open Source"
+  ],
+  "preferred_languages": ["Moroccan Darija", "French", "English"],
+  "busy_slots": [
+    {
+      "day_of_week": "Monday",
+      "start_time": "10:00",
+      "end_time": "12:00",
+      "title": "Distributed Systems Lecture",
+      "campus": "Rabat",
+      "location": "Amphi 1"
+    },
+    {
+      "day_of_week": "Tuesday",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "title": "Machine Learning Systems Lab",
+      "campus": "Rabat",
+      "location": "Room B12"
+    },
+    {
+      "day_of_week": "Wednesday",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "title": "Computer Vision Lab Session",
+      "campus": "Rabat",
+      "location": "Lab 101"
+    },
+    {
+      "day_of_week": "Thursday",
+      "start_time": "09:00",
+      "end_time": "11:00",
+      "title": "Natural Language Processing",
+      "campus": "Rabat",
+      "location": "Auditorium Rabat"
+    },
+    {
+      "day_of_week": "Friday",
+      "start_time": "15:00",
+      "end_time": "17:00",
+      "title": "Capstone Project Defense Prep",
+      "campus": "Rabat",
+      "location": "Learning Hub Rabat"
+    }
+  ],
+  "date_specific_commitments": [
+    {
+      "date": "2026-10-28",
+      "start_time": "14:00",
+      "end_time": "16:00",
+      "title": "Midterm Exam - Advanced Algorithms",
+      "campus": "Rabat",
+      "location": "Amphi 1"
+    },
+    {
+      "date": "2026-10-30",
+      "start_time": "15:00",
+      "end_time": "17:00",
+      "title": "Mandatory Lab Session",
+      "campus": "Rabat",
+      "location": "Lab 101"
+    }
+  ]
+}
