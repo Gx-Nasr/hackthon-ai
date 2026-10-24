@@ -1,0 +1,28 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//UniRadar UM6P Campus Engine//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+SUMMARY:Forgebots Robotics Workshop: Autonomous Drone Navigation
+DTSTART:20261028T173000
+DTEND:20261028T193000
+DTSTAMP:20261024T135544Z
+UID:uniradar-ann_001@um6p.ma
+DESCRIPTION:Hands-on robotics session building ROS2 packages and PX4 auton
+ omous flight controllers. Laptops with Ubuntu 22.04 recommended. Open to a
+ ll students.\n\nOrganizer: Forgebots Robotics Club\nCampus: Rabat\nVenue: 
+ Room B12\, College of Computing Building\nSource: WhatsApp / Instagram Fly
+ er\n\nRegistration / Link: https://forms.gle/forgebots-ros2-rabat\n\nGener
+ ated by UniRadar - UM6P Anti-Chaos Campus Engine.
+LOCATION:Room B12\, College of Computing Building (Rabat Campus)
+STATUS:CONFIRMED
+URL:https://forms.gle/forgebots-ros2-rabat
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Reminder: Forgebots Robotics Workshop: Autonomous Drone Naviga
+ tion
+TRIGGER:-PT2H
+END:VALARM
+END:VEVENT
+END:VCALENDAR
