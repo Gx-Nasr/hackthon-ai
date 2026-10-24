@@ -35,6 +35,8 @@ data/calendars/*.ics
 !data/calendars/.gitkeep
 node_modules/
 dist/
+*.db*
+*.sqlite*
 data/*.db*
 prisma/*.db*
 *.tsbuildinfo

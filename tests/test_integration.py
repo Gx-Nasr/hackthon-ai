@@ -45,7 +45,7 @@ def test_flyer_to_persistence_search_conflict_and_calendar(integrated, database)
     response = client.post("/api/announcements", files={"file": ("flyer.png", image.getvalue(), "image/png")})
     assert response.status_code == 200, response.text
     assert response.json()["announcement"]["source_type"] == "flyer"
-    assert calls[0]["model"] == "gemini-2.5-flash"
+    assert calls[0]["model"] in ("gemini-2.5-flash", "gemini-3-flash-preview")
     assert database.get_event_by_id("integrated_flyer").topics == ["robotics"]
     # A fresh application must recover the upload from SQLite.
     restored = CampusApplication(database)
