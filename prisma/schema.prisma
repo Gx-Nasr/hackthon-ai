@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String                 @id @default(cuid())
+  name                  String
+  email                 String                 @unique
+  passwordHash          String
+  studentId             String?                @unique
+  homeCampus            String?
+  school                String?
+  onboardingCompletedAt DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  sessions              Session[]
+  interests             StudentInterest[]
+  unavailableBlocks     UnavailableTimeBlock[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model StudentInterest {
+  id        String   @id @default(cuid())
+  userId    String
+  value     String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, value])
+  @@index([userId])
+}
+
+model UnavailableTimeBlock {
+  id           String   @id @default(cuid())
+  userId       String
+  dayOfWeek    Int
+  startTime    String
+  endTime      String
+  activityName String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dayOfWeek, startTime])
+}

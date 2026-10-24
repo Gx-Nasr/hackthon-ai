@@ -1,0 +1,47 @@
+import type { CampusEvent } from '../types';
+
+// Demo fixtures only. Replace via GET /api/events; these are not verified UM6P announcements.
+export const demoEvents: CampusEvent[] = [
+  {
+    id: 'demo-rabat-robotics',
+    title: 'Robotics Studio: From Sensor to Motion',
+    summary: 'A sample hands-on workshop card for demonstrating event discovery. No real registration is available in demo mode.',
+    startAt: '2026-10-27T14:00:00+01:00',
+    endAt: '2026-10-27T16:00:00+01:00',
+    timezone: 'Africa/Casablanca',
+    campus: 'Rabat',
+    category: 'Robotics',
+    relevanceScore: 94,
+    statuses: ['relevant'],
+    sourceName: 'Demo announcement',
+    isDemo: true,
+  },
+  {
+    id: 'demo-bg-ai',
+    title: 'AI Research Open Studio',
+    summary: 'A sample cross-campus event for UI preview only. Confirm the actual schedule with a connected campus feed.',
+    startAt: '2026-10-29T17:30:00+01:00',
+    endAt: '2026-10-29T18:45:00+01:00',
+    timezone: 'Africa/Casablanca',
+    campus: 'Ben Guerir',
+    category: 'AI & Data',
+    relevanceScore: 88,
+    statuses: ['relevant', 'cross-campus'],
+    sourceName: 'Demo announcement',
+    isDemo: true,
+  },
+  {
+    id: 'demo-founders',
+    title: 'Founders’ Table: Building With Your First Users',
+    summary: 'A fictional sample for the hackathon interface. There is no live source or enrollment link.',
+    startAt: '2026-11-03T12:15:00+01:00',
+    endAt: '2026-11-03T13:00:00+01:00',
+    timezone: 'Africa/Casablanca',
+    campus: 'Cross-campus',
+    category: 'Entrepreneurship',
+    relevanceScore: 76,
+    statuses: ['cross-campus', 'conflict'],
+    sourceName: 'Demo announcement',
+    isDemo: true,
+  },
+];

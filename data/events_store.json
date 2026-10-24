@@ -1,0 +1,34 @@
+[
+  {
+    "title": "HACKATHON",
+    "campus": "Other",
+    "location_details": "Borcelle City School",
+    "date": "June 20-22",
+    "start_time": null,
+    "end_time": null,
+    "organizer": "Borcelle Science Club",
+    "tags": [
+      "AI",
+      "Hackathon",
+      "Student"
+    ],
+    "summary": "A student hackathon focused on the theme 'AI for a Smarter Tomorrow' to tackle real-world problems. Participants can join from all disciplines with no prior experience required.",
+    "action_url": "WWW.REALLYGREATSITE.COM"
+  },
+  {
+    "title": "AI x Game Dev Hackathon",
+    "campus": "Other",
+    "location_details": "1337 Campus",
+    "date": "November 12",
+    "start_time": null,
+    "end_time": null,
+    "organizer": "1337 Coding School",
+    "tags": [
+      "Hackathon",
+      "AI",
+      "Game Development"
+    ],
+    "summary": "A hackathon focused on the intersection of Artificial Intelligence and Game Development. Participants can build intelligent NPCs or procedural worlds to compete for prizes.",
+    "action_url": null
+  }
+]

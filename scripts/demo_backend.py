@@ -12,6 +12,10 @@ import sys
 import os
 import json
 
+if "--offline" in sys.argv:
+    os.environ["PYTHON_DOTENV_DISABLED"] = "1"
+    os.environ.pop("GEMINI_API_KEY", None)
+
 # Ensure project root is in sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
