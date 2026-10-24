@@ -1,51 +1,61 @@
-"""
-UniRadar Multimodal Extractor Contract & Helpers
-Used by Backend 1 for extracting structured Announcements from flyers, PDFs, and emails.
-Provides unified loaders and conversion utilities.
-"""
-
-from __future__ import annotations
 import os
 import json
-from typing import List, Optional, Dict, Any
-from datetime import datetime
+from PIL import Image
+from google import genai
+from google.genai import types
 
-from src.models import Announcement
+EXTRACTION_SYSTEM_PROMPT = """
+You are UniRadar's Multimodal Campus Parser.
+Analyze the provided event flyer image or raw announcement text (French, English, or mixed Darija).
+Extract the event details into a valid JSON object matching this schema exactly:
+{
+  "title": "<event name>",
+  "campus": "<Rabat | Ben Guerir | Virtual | Other>",
+  "location_details": "<room, building, or online link>",
+  "date": "<YYYY-MM-DD or specific day/date mentioned>",
+  "start_time": "<HH:MM in 24h format, or null>",
+  "end_time": "<HH:MM in 24h format, or null>",
+  "organizer": "<club or department name, e.g., Forgebots, 1337, UM6P>",
+  "tags": ["<relevant tags such as AI, Workshop, Sports, Hackathon>"],
+  "summary": "<concise 2-sentence summary in English>",
+  "action_url": "<registration or submission URL, or null>"
+}
+Do not include backticks, markdown markers, or commentary. Output raw JSON only.
+"""
 
+class AnnouncementExtractor:
+    def __init__(self, api_key: str = None):
+        self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
+        self.client = genai.Client(api_key=self.api_key)
+        self.model_id = "gemma-4-26b-a4b-it"
 
-def load_announcements_from_file(json_path: str = "data/sample_announcements.json") -> List[Announcement]:
-    """Loads announcements from a structured JSON file."""
-    if not os.path.exists(json_path):
-        return []
+    def extract_from_image(self, image_path: str):
+        img = Image.open(image_path)
+        response = self.client.models.generate_content(
+            model=self.model_id,
+            contents=[img, EXTRACTION_SYSTEM_PROMPT],
+            config=types.GenerateContentConfig(
+                temperature=0.1,
+                response_mime_type="application/json"
+            )
+        )
+        data = json.loads(response.text)
+        # Flatten if it's a single-item list
+        if isinstance(data, list) and len(data) == 1:
+            return data[0]
+        return data
 
-    with open(json_path, "r", encoding="utf-8") as f:
-        raw_items = json.load(f)
-
-    announcements: List[Announcement] = []
-    for item in raw_items:
-        # Convert string datetime to datetime object if needed
-        if isinstance(item.get("start_datetime"), str):
-            item["start_datetime"] = datetime.fromisoformat(item["start_datetime"])
-        if item.get("end_datetime") and isinstance(item.get("end_datetime"), str):
-            item["end_datetime"] = datetime.fromisoformat(item["end_datetime"])
-        announcements.append(Announcement(**item))
-
-    return announcements
-
-
-def save_announcements_to_file(
-    announcements: List[Announcement],
-    json_path: str = "data/sample_announcements.json"
-) -> None:
-    """Saves announcement models to JSON file with ISO formatted datetimes."""
-    os.makedirs(os.path.dirname(json_path), exist_ok=True)
-    serialized = []
-    for ann in announcements:
-        data = ann.model_dump()
-        data["start_datetime"] = ann.start_datetime.isoformat()
-        if ann.end_datetime:
-            data["end_datetime"] = ann.end_datetime.isoformat()
-        serialized.append(data)
-
-    with open(json_path, "w", encoding="utf-8") as f:
-        json.dump(serialized, f, indent=2, ensure_ascii=False)
+    def extract_from_text(self, text_payload: str):
+        prompt = f"{EXTRACTION_SYSTEM_PROMPT}\n\nAnnouncement content:\n{text_payload}"
+        response = self.client.models.generate_content(
+            model=self.model_id,
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                temperature=0.1,
+                response_mime_type="application/json"
+            )
+        )
+        data = json.loads(response.text)
+        if isinstance(data, list) and len(data) == 1:
+            return data[0]
+        return data

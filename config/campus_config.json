@@ -1,53 +1,21 @@
 {
-  "university": "Mohammed VI Polytechnic University (UM6P)",
+  "institution": "UM6P",
   "campuses": {
     "Rabat": {
-      "name": "UM6P Rabat Campus",
-      "city": "Rabat / Salé (Rocade de Rabat-Salé)",
-      "common_venues": [
-        "Auditorium Rabat",
-        "Amphi 1",
-        "Amphi 2",
-        "Room B12",
-        "Room A04",
-        "Learning Hub Rabat",
-        "Agora Hall",
-        "FGSES Main Hall"
-      ],
-      "schools": [
-        "College of Computing",
-        "FGSES",
-        "Africa Business School (ABS)",
-        "School of Collective Intelligence (SCI)"
-      ]
+      "city": "Rabat-Salé",
+      "schools": ["College of Computing", "1337", "FGSES", "Africa Business School"],
+      "primary_transport": "Local Tram / Walking / Taxi"
     },
     "Ben Guerir": {
-      "name": "UM6P Main Campus Ben Guerir",
       "city": "Ben Guerir",
-      "common_venues": [
-        "Congress Center",
-        "Amphi OCP",
-        "Building 1 - Room 102",
-        "1337 Coding school",
-        "SDA Lab",
-        "Sports Complex",
-        "FabLab UM6P",
-        "Innovation Dome"
-      ],
-      "schools": [
-        "College of Computing",
-        "1337 Coding School",
-        "EMINES",
-        "SAP+D",
-        "School of Agriculture, Fertilizer & Environmental Sciences (ESAFE)",
-        "GTI"
-      ]
+      "schools": ["School of Computer Science", "EMINES", "SAP+D", "Green Energy Park"],
+      "primary_transport": "ONCF Al Boraq / Atlas Train via Casablanca Voyageurs"
     }
   },
   "commute_rules": {
-    "rabat_to_benguerir_hours": 2.5,
-    "min_buffer_minutes": 180,
-    "transit_mode": "ONCF Al Boraq / Atlas Train + UM6P Shuttle",
-    "recommendation": "Traveling between Rabat and Ben Guerir requires at least 3 hours transit or joining via Microsoft Teams / Webex."
-  }
+    "intercampus_transit_hours": 3.5,
+    "transit_mode": "ONCF Train",
+    "alert_message": "Cross-Campus Alert: Event requires travel between Rabat and Ben Guerir (~3.5h via ONCF). Plan departure in advance."
+  },
+  "default_tags": ["Hackathon", "Workshop", "Conference", "Sports", "Administrative", "Club Activity"]
 }
