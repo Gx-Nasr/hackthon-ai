@@ -1,4 +1,3 @@
-"""Private Python API; the Node server supplies authenticated student context."""
 import base64
 from io import BytesIO
 from threading import Lock

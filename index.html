@@ -14,7 +14,7 @@
           const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           const dark = saved === 'dark' || (saved !== 'light' && saved !== 'dark' && systemDark);
           document.documentElement.classList.toggle('dark', dark);
-        } catch { /* Storage can be unavailable in restricted browser contexts. */ }
+        } catch { }
       })();
     </script>
   </head>
